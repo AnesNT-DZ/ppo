@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pollinations AI Bot - شات بوت مجاني</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+        * { font-family: 'Cairo', sans-serif; }
+        .message-user { background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%); }
+        .message-bot { background: rgba(30, 41, 59, 0.9); border: 1px solid #475569; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        .dot { animation: bounce 1.4s infinite ease-in-out; }
+        .dot:nth-child(2) { animation-delay: 0.16s; }
+        .dot:nth-child(3) { animation-delay: 0.32s; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-pink-900 via-purple-900 to-indigo-900 min-h-screen">
+    <div class="max-w-4xl mx-auto p-4 h-screen flex flex-col">
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-pink-600 to-purple-600 rounded-t-2xl p-6 shadow-2xl">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="bg-white/20 p-3 rounded-xl backdrop-blur-sm">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold text-white">Pollinations AI Bot</h1>
+                        <p class="text-pink-100 text-sm">مجاني 100% 🌸 - احفظ الملف واستخدمه على جهازك</p>
+                    </div>
+                </div>
+                <button onclick="clearChat()" class="bg-white/20 hover:bg-white/30 p-3 rounded-xl transition-all backdrop-blur-sm">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Messages -->
+        <div id="messages" class="flex-1 bg-slate-900/50 backdrop-blur-xl overflow-y-auto p-6 space-y-4">
+            <div class="flex justify-start">
+                <div class="message-bot max-w-[80%] rounded-2xl p-4 shadow-lg text-white">
+                    <p class="text-sm leading-relaxed">مرحباً! أنا شات بوت مدعوم بـ <strong>Pollinations AI</strong> المجاني 🌸</p>
+                    <p class="text-sm mt-2">يمكنني:</p>
+                    <ul class="text-sm mt-1 space-y-1">
+                        <li>✨ الإجابة على أسئلتك</li>
+                        <li>💻 كتابة أكواد برمجية</li>
+                        <li>🧮 حل مسائل رياضية</li>
+                        <li>🎨 توليد صور بالذكاء الاصطناعي</li>
+                    </ul>
+                    <p class="text-sm mt-2">ماذا تريد أن تفعل؟</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Prompts -->
+        <div class="bg-slate-900/50 backdrop-blur-xl px-6 py-3 flex gap-2 overflow-x-auto">
+            <button onclick="setInput('اكتب كود Python لحساب الأعداد الأولية')" class="bg-blue-500 hover:opacity-80 text-white px-4 py-2 rounded-xl text-sm whitespace-nowrap transition-all shadow-lg">
+                💻 كود Python
+            </button>
+            <button onclick="setInput('اشرح لي خوارزمية الترتيب السريع')" class="bg-purple-500 hover:opacity-80 text-white px-4 py-2 rounded-xl text-sm whitespace-nowrap transition-all shadow-lg">
+                ✨ شرح خوارزمية
+            </button>
+            <button onclick="setInput('ارسم لي صورة غروب شمس على البحر')" class="bg-pink-500 hover:opacity-80 text-white px-4 py-2 rounded-xl text-sm whitespace-nowrap transition-all shadow-lg">
+                🎨 توليد صورة
+            </button>
+        </div>
+
+        <!-- Input -->
+        <div class="bg-slate-900/50 backdrop-blur-xl rounded-b-2xl p-4 shadow-2xl">
+            <div class="flex gap-3">
+                <input 
+                    id="userInput" 
+                    type="text" 
+                    placeholder="اكتب سؤالك أو اطلب صورة... مثل: اكتب كود Python أو ارسم لي صورة جبل"
+                    class="flex-1 bg-slate-800/90 text-white border border-slate-700 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500 placeholder-slate-400"
+                    onkeypress="if(event.key==='Enter') sendMessage()"
+                />
+                <button onclick="sendMessage()" id="sendBtn" class="bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-700 hover:to-purple-700 text-white px-6 py-3 rounded-xl transition-all shadow-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                    </svg>
+                </button>
+            </div>
+            <p class="text-xs text-slate-400 mt-2 text-center">
+                مجاني تماماً • بدون حدود • احفظ هذا الملف HTML واستخدمه على جهازك
+            </p>
+        </div>
+    </div>
+
+    <script>
+        let conversationHistory = [];
+
+        function addMessage(role, content, image = null) {
+            const messagesDiv = document.getElementById('messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `flex ${role === 'user' ? 'justify-end' : 'justify-start'}`;
+            
+            const bubble = document.createElement('div');
+            bubble.className = `${role === 'user' ? 'message-user' : 'message-bot'} max-w-[80%] rounded-2xl p-4 shadow-lg text-white`;
+            
+            if (image) {
+                bubble.innerHTML = `
+                    <p class="text-sm mb-2">${content}</p>
+                    <img src="${image}" alt="Generated" class="rounded-lg w-full max-w-md mt-2" 
+                         onerror="this.style.display='none'; this.parentElement.innerHTML += '<p class=text-red-300>فشل تحميل الصورة</p>'">
+                `;
+            } else {
+                bubble.innerHTML = `<pre class="whitespace-pre-wrap font-sans text-sm leading-relaxed">${content}</pre>`;
+            }
+            
+            messageDiv.appendChild(bubble);
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function showLoading() {
+            const messagesDiv = document.getElementById('messages');
+            const loadingDiv = document.createElement('div');
+            loadingDiv.id = 'loading';
+            loadingDiv.className = 'flex justify-start';
+            loadingDiv.innerHTML = `
+                <div class="message-bot rounded-2xl p-4 shadow-lg">
+                    <div class="flex gap-2">
+                        <div class="w-2 h-2 bg-pink-500 rounded-full dot"></div>
+                        <div class="w-2 h-2 bg-purple-500 rounded-full dot"></div>
+                        <div class="w-2 h-2 bg-indigo-500 rounded-full dot"></div>
+                    </div>
+                </div>
+            `;
+            messagesDiv.appendChild(loadingDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function hideLoading() {
+            const loading = document.getElementById('loading');
+            if (loading) loading.remove();
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('userInput');
+            const message = input.value.trim();
+            if (!message) return;
+
+            addMessage('user', message);
+            input.value = '';
+            showLoading();
+
+            const isImageRequest = message.includes('صورة') || message.includes('ارسم') || 
+                                  message.includes('image') || message.includes('draw');
+
+            try {
+                if (isImageRequest) {
+                    // توليد صورة
+                    const imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(message)}?width=512&height=512&nologo=true`;
+                    hideLoading();
+                    addMessage('assistant', 'تم توليد الصورة! 🎨', imageUrl);
+                } else {
+                    // محادثة نصية
+                    const systemPrompt = 'أنت مساعد ذكي ومفيد. تجيب باللغة العربية بشكل واضح ومفصل. يمكنك كتابة الأكواد البرمجية وحل المسائل الرياضية وشرح المفاهيم.';
+                    
+                    const context = conversationHistory.slice(-6).map(msg => 
+                        `${msg.role === 'user' ? 'المستخدم' : 'المساعد'}: ${msg.content}`
+                    ).join('\n');
+                    
+                    const fullPrompt = context 
+                        ? `${systemPrompt}\n\nالمحادثة السابقة:\n${context}\n\nالمستخدم: ${message}\nالمساعد:`
+                        : `${systemPrompt}\n\nالمستخدم: ${message}\nالمساعد:`;
+
+                    const response = await fetch('https://text.pollinations.ai/', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            messages: [{ role: 'user', content: fullPrompt }],
+                            model: 'openai',
+                            seed: Math.floor(Math.random() * 1000000)
+                        })
+                    });
+
+                    const text = await response.text();
+                    hideLoading();
+                    addMessage('assistant', text.trim() || 'عذراً، لم أتمكن من الحصول على رد.');
+
+                    conversationHistory.push({ role: 'user', content: message });
+                    conversationHistory.push({ role: 'assistant', content: text.trim() });
+                }
+            } catch (error) {
+                hideLoading();
+                addMessage('assistant', 'عذراً، حدث خطأ. تأكد من اتصالك بالإنترنت وحاول مرة أخرى.\n\nملاحظة: هذا الشات بوت يعمل بشكل أفضل عندما تحفظ الملف على جهازك وتفتحه من المتصفح مباشرة.');
+                console.error('Error:', error);
+            }
+        }
+
+        function setInput(text) {
+            document.getElementById('userInput').value = text;
+        }
+
+        function clearChat() {
+            const messagesDiv = document.getElementById('messages');
+            messagesDiv.innerHTML = `
+                <div class="flex justify-start">
+                    <div class="message-bot max-w-[80%] rounded-2xl p-4 shadow-lg text-white">
+                        <p class="text-sm leading-relaxed">مرحباً! أنا شات بوت مدعوم بـ <strong>Pollinations AI</strong> المجاني 🌸</p>
+                        <p class="text-sm mt-2">يمكنني:</p>
+                        <ul class="text-sm mt-1 space-y-1">
+                            <li>✨ الإجابة على أسئلتك</li>
+                            <li>💻 كتابة أكواد برمجية</li>
+                            <li>🧮 حل مسائل رياضية</li>
+                            <li>🎨 توليد صور بالذكاء الاصطناعي</li>
+                        </ul>
+                        <p class="text-sm mt-2">ماذا تريد أن تفعل؟</p>
+                    </div>
+                </div>
+            `;
+            conversationHistory = [];
+        }
+    </script>
+</body>
+</html>
